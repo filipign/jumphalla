@@ -1,21 +1,34 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 
+import pygame
 
-class GameState(ABC):
-    def __init__(self):
-        self.name = 'abstract'
-        self.current_background = 'current_background'
+from jumphalla.entity import player
 
+
+class GameComponent(ABC):
     @abstractmethod
     def update(self):
+        '''In this method, object should update it's internal logic'''
         pass
 
-    def get_background(self):
-        return self.current_background
+    @abstractmethod
+    def draw(self):
+        '''In this method, object should return it's image to draw on screen,
+        with x,y coordinates
+        '''
+        pass
 
-    def get_name(self):
-        return self.name
+class GameState(GameComponent):
+    @property
+    @abstractmethod
+    def name(self):
+        pass
+
+    @abstractmethod
+    def key_pressed(self, keys):
+        pass
+
 
 
 class GameStateName(Enum):
@@ -23,25 +36,53 @@ class GameStateName(Enum):
     RUNNING = 1
     PAUSE = 2
 
-class MenuState(GameState):
-    def __init__(self):
-        self.name = GameStateName.MENU
 
+class MenuState(GameState):
     def update(self):
+        pass
+
+    def draw(self):
+        pass
+
+    @property
+    def name(self):
+        return GameStateName.MENU
+
+    def key_pressed(self, keys):
         pass
 
 
 class RunningState(GameState):
     def __init__(self):
-        self.name = GameStateName.RUNNING
+        self.player = player.Player(100, 100)
 
     def update(self):
-        pass
+        self.player.update()
+
+    def draw(self):
+        return self.player.draw()
+
+    @property
+    def name(self):
+        return GameStateName.RUNNING
+
+    def key_pressed(self, keys):
+        if keys[pygame.K_RIGHT]:
+            self.player.move(player.Direction.RIGHT)
+        if keys[pygame.K_LEFT]:
+            self.player.move(player.Direction.LEFT)
 
 
 class PauseState(GameState):
-    def __init__(self):
-        self.name = GameStateName.PAUSE
-
     def update(self):
+        pass
+
+    def draw(self):
+        pass
+
+    @property
+    def name(self):
+        return GameStateName.PAUSE
+
+    def key_pressed(self, keys):
         pass

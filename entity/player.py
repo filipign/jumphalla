@@ -10,10 +10,18 @@ class Direction(Enum):
     LEFT = -1
 
 
+class PlayerState(Enum):
+    FALLING = 0
+    IDLE = 1
+    RUNNING = 2
+    POWERING = 3
+    JUMPING = 4
+
+
 class Player(GameEntity):
     def __init__(self, x, y):
         super().__init__(x, y)
-        self.img = pygame.image.load('resources/hero/idle-0.png')
+        self.img = pygame.image.load('resources/hero/idle-right-0.png')
 
     def update(self):
         self.x += self.x_velocity

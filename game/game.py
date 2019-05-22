@@ -28,6 +28,6 @@ class Game:
     def create_window(self):
         pygame.init()
         # TODO: read this from config file
-        window = pygame.display.set_mode((1216, 800))
+        window = pygame.display.set_mode((1216, 832))
         pygame.display.set_caption("Jumphalla")
         return window

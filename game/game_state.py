@@ -4,6 +4,7 @@ from enum import Enum
 import pygame
 
 from jumphalla.entity import player
+from jumphalla.map import game_map
 
 
 class GameComponent(ABC):
@@ -14,10 +15,12 @@ class GameComponent(ABC):
 
     @abstractmethod
     def draw(self):
-        '''In this method, object should return it's image to draw on screen,
-        with x,y coordinates
+        '''Returns:
+            tuple: image loaded with pygame.image module and coordinates
+            indicating where to draw image.
         '''
         pass
+
 
 class GameState(GameComponent):
     @property
@@ -28,7 +31,6 @@ class GameState(GameComponent):
     @abstractmethod
     def key_pressed(self, keys):
         pass
-
 
 
 class GameStateName(Enum):
@@ -55,12 +57,16 @@ class MenuState(GameState):
 class RunningState(GameState):
     def __init__(self):
         self.player = player.Player(100, 100)
+        self.map = game_map.GameMap('resources/map/background-0.png')
 
     def update(self):
         self.player.update()
 
     def draw(self):
-        return self.player.draw()
+        to_draw = []
+        to_draw += self.map.draw()
+        to_draw.append(self.player.draw())
+        return tuple(to_draw)
 
     @property
     def name(self):

@@ -1,7 +1,4 @@
-from jumphalla.game.game_state import GameComponent
-
-
-class GameEntity(GameComponent):
+class GameEntity():
     '''GameEntity is base of how objects in game like player will behave.
     This includes physics attributes and basics properties.
     '''
@@ -18,4 +15,7 @@ class GameEntity(GameComponent):
 
         self.x_max_velocity = 15
         self.y_max_velocity = 30
+
+        self.width_hitbox = 64
+        self.height_hitbox = 64
 

@@ -1,10 +1,8 @@
 # TODO: cleanup imports
 import pygame
 
-from game.game_state import GameStateName
-from game.game_state import MenuState
-from game.game_state import RunningState
-from game.game_state import PauseState
+from jumphalla.game import game_state
+
 
 class GameManager:
     '''State manager handle game states as menu, pause, actual running game and
@@ -12,11 +10,11 @@ class GameManager:
     '''
     def __init__(self, window):
         self.states = {
-            GameStateName.MENU: MenuState(),
-            GameStateName.PAUSE: PauseState(),
-            GameStateName.RUNNING: RunningState(),
+            game_state.GameStateName.MENU: game_state.MenuState(),
+            game_state.GameStateName.PAUSE: game_state.PauseState(),
+            game_state.GameStateName.RUNNING: game_state.RunningState(),
         }
-        self.current_state = self.states[GameStateName.RUNNING]
+        self.current_state = self.states[game_state.GameStateName.RUNNING]
         self.window = window
 
     def update(self):
@@ -25,8 +23,8 @@ class GameManager:
 
     def draw(self):
         self.window.fill((0, 0, 0))
-        to_draw = self.current_state.draw()
-        self.window.blit(to_draw[0], to_draw[1])
+        # to_draw = self.current_state.draw()
+        self.window.blits(self.current_state.draw())
         pygame.display.flip()
 
     def change_state(self, state):

@@ -9,7 +9,7 @@ class Tile():
             solid (boolean): boolean that indicates if tile is solid
         '''
         self.img = path and pygame.image.load(path)
-        self.solid = solid
+        self.is_solid = solid
 
 
 class GameMap:
@@ -46,3 +46,11 @@ class GameMap:
             0: Tile(),
             1: Tile(solid=True, path='resources/map/floor-0.png')
         }
+
+    def get_tile(self, x, y):
+        if x < 0 or x >= self.width:
+            return None
+
+        if y < 0 or y >= self.heigth:
+            return None
+        return self.level[y][x]

@@ -57,14 +57,16 @@ class MenuState(GameState):
 class RunningState(GameState):
     def __init__(self):
         self.player = player.Player(100, 100)
-        self.map = game_map.GameMap('resources/map/background-0.png')
+        self.game_map = game_map.GameMap('resources/map/background-0.png')
 
     def update(self):
-        self.player.update()
+        self.player.update(self.get_nearby_tiles(),
+                           self.game_map.tile_width,
+                           self.game_map.tile_width)
 
     def draw(self):
         to_draw = []
-        to_draw += self.map.draw()
+        to_draw += self.game_map.draw()
         to_draw.append(self.player.draw())
         return tuple(to_draw)
 
@@ -77,6 +79,30 @@ class RunningState(GameState):
             self.player.move(player.Direction.RIGHT)
         if keys[pygame.K_LEFT]:
             self.player.move(player.Direction.LEFT)
+        if keys[pygame.K_UP]:
+            self.player.move(player.Direction.UP)
+
+    def get_nearby_tiles(self):
+        '''Get 4 nearby tiles, for player object to check if he collides with them'''
+        left = int((self.player.x + self.player.x_velocity) / self.game_map.tile_width)
+        right = left + 1
+        up = int((self.player.y + self.player.y_velocity) / self.game_map.tile_height)
+        down = up + 1
+
+        upper_left = self.game_map.get_tile(left, up)
+        upper_right = self.game_map.get_tile(right, up)
+        down_left = self.game_map.get_tile(left, down)
+        down_right = self.game_map.get_tile(right, down)
+        return {
+            'upper_left': (upper_left is not None
+                           and self.game_map.tiles[upper_left].is_solid),
+            'upper_right': (upper_right is not None
+                            and self.game_map.tiles[upper_right].is_solid),
+            'down_left': (down_left is not None
+                          and self.game_map.tiles[down_left].is_solid),
+            'down_right': (down_right is not None
+                           and self.game_map.tiles[down_right].is_solid),
+        }
 
 
 class PauseState(GameState):

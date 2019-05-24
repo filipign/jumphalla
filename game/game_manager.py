@@ -23,7 +23,6 @@ class GameManager:
 
     def draw(self):
         self.window.fill((0, 0, 0))
-        # to_draw = self.current_state.draw()
         self.window.blits(self.current_state.draw())
         pygame.display.flip()
 

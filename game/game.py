@@ -6,7 +6,7 @@ from game.game_manager import GameManager
 class Game:
     def __init__(self):
         # TODO: Into config file
-        self.fps = 60
+        self.fps = 90
         self.frame_time = int(10**3/self.fps)  # msec
         self.window = self.create_window()
         self.manager = GameManager(self.window)

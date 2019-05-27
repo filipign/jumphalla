@@ -16,8 +16,8 @@ class GameComponent(ABC):
     @abstractmethod
     def draw(self):
         '''Returns:
-            tuple: image loaded with pygame.image module and coordinates
-            indicating where to draw image.
+            tuple: images loaded with pygame.image module and coordinates
+                indicating where to draw image.
         '''
         pass
 
@@ -30,6 +30,12 @@ class GameState(GameComponent):
 
     @abstractmethod
     def key_pressed(self, keys):
+        '''
+        Handling pressed keys.
+
+        Args:
+            keys (list): list of boolean values, indicating what key is pressed.
+        '''
         pass
 
 
@@ -83,7 +89,20 @@ class RunningState(GameState):
             self.player.move(player.Direction.UP)
 
     def get_nearby_tiles(self):
-        '''Get 4 nearby tiles, for player object to check if he collides with them'''
+        '''Get 4 nearby tiles, for player object to check if he collides with them.
+
+        Returns:
+            dict: Dictionary of 4 closest tiles, with bools values indicating
+                that tiles is solid or not.
+
+        Example:
+            `{
+                'upper_left': False,
+                'upper_right': False,
+                'down_left': True,
+                'down_right': True,
+            }`
+        '''
         left = int((self.player.x + self.player.x_velocity) / self.game_map.tile_width)
         right = left + 1
         up = int((self.player.y + self.player.y_velocity) / self.game_map.tile_height)

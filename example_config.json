@@ -1,0 +1,18 @@
+{
+    "window": {
+        "width": 1216,
+        "height": 832
+    },
+    "game": {
+        "fps": 120,
+        "name": "Jumphalla"
+    },
+    "map": {
+        "width": 19,
+        "height": 13,
+        "tile": {
+            "width": 64,
+            "height": 64
+        }
+    }
+}

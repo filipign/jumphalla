@@ -21,11 +21,32 @@ class PlayerState(Enum):
 
 class Player(GameEntity):
     def __init__(self, x, y):
+        '''Main class representing hero that player will take control of in
+        the game.
+
+        Args:
+            x (int): Starting x coordinate.
+            y (int): Starting y coordinate.
+        '''
         super().__init__(x, y)
         self.img = pygame.image.load('resources/hero/idle-right-0.png')
         self.current_state = PlayerState.FALLING
 
     def update(self, nearby_tiles, tile_width, tile_height):
+        '''Updates internal logic of player - change in his position on map
+        (accounting object collision) and velocity.
+
+        For object collision, player checks if his hitbox would cut with any
+        nearby solid tile on map, if so then set player position as close to
+        tile as possible.
+
+        Args:
+            nearby_tiles (dict): Dictionary of 4 closest tiles, with bools values indicating
+                that tiles is solid or not.
+            tile_width (int): Map tile width.
+            tile_heigth (int): Map tile heigth.
+
+        '''
         # collision check
         left = int((self.x + self.x_velocity) / tile_width)
         right = left + 1
@@ -72,6 +93,12 @@ class Player(GameEntity):
                 self.y_velocity = self.y_max_velocity
 
     def move(self, direction):
+        '''Changes player velocity, based on given direction
+
+        Args:
+            direction (enum): Direction enum member, indicating where should
+                player move.
+        '''
         if direction == Direction.UP:
             self.y_velocity = -15
             return

@@ -1,18 +1,20 @@
 import pygame
 
+from jumphalla.config import config
 from game.game_manager import GameManager
 
 
 class Game:
     def __init__(self):
-        # TODO: Into config file
-        self.fps = 90
-        self.frame_time = int(10**3/self.fps)  # msec
+        '''Game module is top level class, handles game loop.'''
+        self.frame_time = int(10**3 / config['game']['fps'])  # in msec
         self.window = self.create_window()
         self.manager = GameManager(self.window)
 
     def run(self):
-        '''Main loop of the game'''
+        '''Main loop of the game, loops as long as window not receive quit
+        signal.
+        '''
         running = True
 
         while running:
@@ -26,8 +28,13 @@ class Game:
         pygame.quit()
 
     def create_window(self):
+        '''Initializes pygame window with parameters from config file
+
+        Returns:
+            Surface: initialized pygame window
+        '''
         pygame.init()
-        # TODO: read this from config file
-        window = pygame.display.set_mode((1216, 832))
-        pygame.display.set_caption("Jumphalla")
+        window = pygame.display.set_mode((config['window']['width'],
+                                          config['window']['height']))
+        pygame.display.set_caption(config['game']['name'])
         return window

@@ -5,6 +5,7 @@ class GameEntity():
     def __init__(self, x, y):
         super().__init__()
 
+        # constants
         # x and y of upper left corner
         self.x = x
         self.y = y

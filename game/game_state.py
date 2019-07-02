@@ -63,6 +63,7 @@ class MenuState(GameState):
 class RunningState(GameState):
     def __init__(self):
         self.player = player.Player(100, 100)
+        # TODO: store paths in separate file
         self.game_map = game_map.GameMap('resources/map/background-0.png')
 
     def update(self):

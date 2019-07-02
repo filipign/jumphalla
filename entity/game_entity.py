@@ -1,5 +1,5 @@
 class GameEntity():
-    '''GameEntity is base of how objects in game like player will behave.
+    '''GameEntity is base of how objects in game, like player, will behave.
     This includes physics attributes and basics properties. Values in pixels.
     '''
     def __init__(self, x, y):

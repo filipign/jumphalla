@@ -1,6 +1,6 @@
 ## Jumphalla
 
-My small project with main purpose to improve my python skills.
+Small project with main purpose to improve my python skills.
 Inspired by indie game Jump King.
 
 # How to run
@@ -11,5 +11,13 @@ Inspired by indie game Jump King.
 ./app.py
 ```
 
+# How to run tests
+In root directory
+```
+nosetests
+```
+
 # Libriaries used
-PyGame (for handling game loop and graphics), numpy
+- PyGame (for handling game loop and graphics)
+- numpy
+- nose

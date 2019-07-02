@@ -45,9 +45,34 @@ class Player(GameEntity):
                 that tiles is solid or not.
             tile_width (int): Map tile width.
             tile_heigth (int): Map tile heigth.
-
         '''
-        # collision check
+        self.collision_check(nearby_tiles, tile_width, tile_height)
+
+        self.x += self.x_velocity
+        self.y += self.y_velocity
+
+        # slowing down if not moving
+        if self.x_velocity > 0:
+            self.x_velocity -= 1
+        elif self.x_velocity < 0:
+            self.x_velocity += 1
+
+        if self.current_state == PlayerState.FALLING:
+            self.y_velocity += self.y_acceleration
+            if abs(self.y_velocity) > self.y_max_velocity:
+                self.y_velocity = self.y_max_velocity
+
+    def collision_check(self, nearby_tiles, tile_width, tile_height):
+        '''For object collision, player checks if his hitbox would cut with any
+        nearby solid tile on map, if so then set player position as close to
+        tile as possible.
+
+        Args:
+            nearby_tiles (dict): Dictionary of 4 closest tiles, with bools values indicating
+                that tiles is solid or not.
+            tile_width (int): Map tile width.
+            tile_heigth (int): Map tile heigth.
+        '''
         left = int((self.x + self.x_velocity) / tile_width)
         right = left + 1
         up = int((self.y + self.y_velocity) / tile_height)
@@ -77,20 +102,6 @@ class Player(GameEntity):
 
         if not nearby_tiles['down_left'] and not nearby_tiles['down_right']:
             self.current_state = PlayerState.FALLING
-
-        self.x += self.x_velocity
-        self.y += self.y_velocity
-
-        # slowing down if not moving
-        if self.x_velocity > 0:
-            self.x_velocity -= 1
-        elif self.x_velocity < 0:
-            self.x_velocity += 1
-
-        if self.current_state == PlayerState.FALLING:
-            self.y_velocity += self.y_acceleration
-            if abs(self.y_velocity) > self.y_max_velocity:
-                self.y_velocity = self.y_max_velocity
 
     def move(self, direction):
         '''Changes player velocity, based on given direction

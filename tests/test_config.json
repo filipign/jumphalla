@@ -14,7 +14,7 @@
             "width": 64,
             "height": 64
         },
-        "maps_path": "resources/map/levels/",
+        "maps_path": "tests/test_maps/",
         "tiles_path": "resources/map/",
         "background": "resources/map/background-0.png"
     }

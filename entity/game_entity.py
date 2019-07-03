@@ -1,4 +1,4 @@
-class GameEntity():
+class GameEntity:
     '''GameEntity is base of how objects in game, like player, will behave.
     This includes physics attributes and basics properties. Values in pixels.
     '''
@@ -12,10 +12,10 @@ class GameEntity():
         self.x_velocity = 0
         self.y_velocity = 0
 
-        self.x_acceleration = 3
-        self.y_acceleration = 3
+        self.x_acceleration = 1
+        self.y_acceleration = 1
 
-        self.x_max_velocity = 15
+        self.x_max_velocity = 8
         self.y_max_velocity = 15
 
         self.width_hitbox = 64

@@ -6,6 +6,9 @@ from jumphalla.game.game import Game
 
 
 def main():
+    # Writes 0 to load proper config file
+    with open('testing', 'w') as file_handler:
+        file_handler.write('0')
     game = Game()
     game.run()
 

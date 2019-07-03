@@ -19,6 +19,14 @@ class PlayerState(Enum):
     JUMPING = 4
 
 
+class StateImageHandler:
+    '''Handles images and animations for a Player entity'''
+    def __init__(self):
+        # TODO: paths to config file
+        self.running_img = pygame.image.load('resources/hero/idle-right-0.png')
+        self.powering_img = pygame.image.load('resources/hero/powering.png')
+
+
 class Player(GameEntity):
     def __init__(self, x, y):
         '''Main class representing hero that player will take control of in
@@ -29,8 +37,17 @@ class Player(GameEntity):
             y (int): Starting y coordinate.
         '''
         super().__init__(x, y)
-        self.img = pygame.image.load('resources/hero/idle-right-0.png')
+        self.img = StateImageHandler()
         self.current_state = PlayerState.FALLING
+
+        # Values in pixels
+        self.powering_jump = 0
+        self.powering_speed = 1
+        self.max_powering = 14
+        self.jump_direction = Direction.UP
+
+        self.jump_time = 14  # frames
+        self.jump_timer = 0
 
     def update(self, nearby_tiles, tile_width, tile_height):
         '''Updates internal logic of player - change in his position on map
@@ -51,13 +68,20 @@ class Player(GameEntity):
         self.x += self.x_velocity
         self.y += self.y_velocity
 
-        # slowing down if not moving
-        if self.x_velocity > 0:
-            self.x_velocity -= 1
-        elif self.x_velocity < 0:
-            self.x_velocity += 1
+        # slowing down if moving on the ground
+        if self.y_velocity > -1:
+            if self.x_velocity > 0.5:
+                self.x_velocity -= 0.3
+            elif self.x_velocity < 0.5:
+                self.x_velocity += 0.3
+
+            if self.x_velocity < 0.5 and self.x_velocity > -0.5:
+                self.x_velocity = 0
 
         if self.current_state == PlayerState.FALLING:
+            if self.jump_timer != 0:
+                self.jump_timer -= 1
+                return
             self.y_velocity += self.y_acceleration
             if abs(self.y_velocity) > self.y_max_velocity:
                 self.y_velocity = self.y_max_velocity
@@ -103,20 +127,63 @@ class Player(GameEntity):
         if not nearby_tiles['down_left'] and not nearby_tiles['down_right']:
             self.current_state = PlayerState.FALLING
 
-    def move(self, direction):
-        '''Changes player velocity, based on given direction
+    def move(self, directions):
+        '''Changes player velocity, based on given direction.
 
         Args:
-            direction (enum): Direction enum member, indicating where should
-                player move.
-        '''
-        if direction == Direction.UP:
-            self.y_velocity = -15
-            return
+            direction (dict): dict of direction 0's and 1's, indicating where
+                should player move.
 
-        self.x_velocity += self.x_acceleration * direction.value
-        if abs(self.x_velocity) > self.x_max_velocity:
-            self.x_velocity = self.x_max_velocity * direction.value
+        Example:
+            directions = {
+                'UP': 0,
+                'LEFT': 1,
+                'RIGHT': 1
+            }
+        '''
+        if self.current_state == PlayerState.POWERING:
+            if not directions['UP']:
+                self.y_velocity = (-self.powering_jump if
+                                   self.powering_jump < self.max_powering
+                                   else -self.max_powering)
+                if self.jump_direction != Direction.UP:
+                    if self.powering_jump < self.max_powering:
+                        self.x_velocity = int((self.powering_jump
+                                               * self.jump_direction.value
+                                               * 0.5))
+                    else:
+                        self.x_velocity = int((self.max_powering
+                                               * self.jump_direction.value
+                                               * 0.5))
+                self.x_velocity = int(self.x_velocity)
+                self.jump_timer = self.jump_time
+                self.powering_jump = 0
+                self.jump_direction = Direction.UP
+                return
+
+            if directions['UP']:
+                self.powering_jump += self.powering_speed
+
+            if directions['LEFT']:
+                self.jump_direction = Direction.LEFT
+
+            if directions['RIGHT']:
+                self.jump_direction = Direction.RIGHT
+
+        if self.current_state == PlayerState.RUNNING:
+            if directions['UP']:
+                self.current_state = PlayerState.POWERING
+                return
+
+            if directions['RIGHT'] or directions['LEFT']:
+                direction = (Direction.RIGHT if directions['RIGHT'] else
+                             Direction.LEFT)
+                self.x_velocity += self.x_acceleration * direction.value
+                if abs(self.x_velocity) > self.x_max_velocity:
+                    self.x_velocity = self.x_max_velocity * direction.value
 
     def draw(self):
-        return (self.img, (self.x, self.y))
+        if self.current_state == PlayerState.POWERING:
+            return (self.img.powering_img, (self.x, self.y))
+
+        return (self.img.running_img, (int(self.x), int(self.y)))

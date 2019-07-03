@@ -3,6 +3,7 @@ from enum import Enum
 
 import pygame
 
+from jumphalla.config import config
 from jumphalla.entity import player
 from jumphalla.map import game_map
 
@@ -63,13 +64,18 @@ class MenuState(GameState):
 class RunningState(GameState):
     def __init__(self):
         self.player = player.Player(100, 100)
-        # TODO: store paths in separate file
-        self.game_map = game_map.GameMap('resources/map/background-0.png')
+        self.game_map = game_map.GameMap(config['map']['background'])
+        self.window_height = config['window']['height']
 
     def update(self):
         self.player.update(self.get_nearby_tiles(),
                            self.game_map.tile_width,
-                           self.game_map.tile_width)
+                           self.game_map.tile_height)
+
+        if self.player.y < 0 or self.player.y > self.window_height:
+            direction = True if self.player.y < 0 else False
+            self.game_map.change_level(up=direction)
+            self.player.set_position(y=self.window_height-abs(self.player.y))
 
     def draw(self):
         to_draw = []
@@ -82,12 +88,15 @@ class RunningState(GameState):
         return GameStateName.RUNNING
 
     def key_pressed(self, keys):
-        if keys[pygame.K_RIGHT]:
-            self.player.move(player.Direction.RIGHT)
-        if keys[pygame.K_LEFT]:
-            self.player.move(player.Direction.LEFT)
-        if keys[pygame.K_UP]:
-            self.player.move(player.Direction.UP)
+        '''Pass dict of direction 0's and 1's, indicating where should player
+        move.
+        '''
+        directional_keys = {
+            'UP': keys[pygame.K_UP],
+            'LEFT': keys[pygame.K_LEFT],
+            'RIGHT': keys[pygame.K_RIGHT]
+        }
+        self.player.move(directional_keys)
 
     def get_nearby_tiles(self):
         '''Get 4 nearby tiles, for player object to check if he collides with them.
@@ -114,14 +123,11 @@ class RunningState(GameState):
         down_left = self.game_map.get_tile(left, down)
         down_right = self.game_map.get_tile(right, down)
         return {
-            'upper_left': (upper_left is not None
-                           and self.game_map.tiles[upper_left].is_solid),
-            'upper_right': (upper_right is not None
-                            and self.game_map.tiles[upper_right].is_solid),
-            'down_left': (down_left is not None
-                          and self.game_map.tiles[down_left].is_solid),
-            'down_right': (down_right is not None
-                           and self.game_map.tiles[down_right].is_solid),
+            'upper_left': upper_left.solid if upper_left is not None else None,
+            'upper_right': (upper_right.solid if upper_right is not None
+                            else None),
+            'down_left': down_left.solid if down_left is not None else None,
+            'down_right': down_right.solid if down_right is not None else None,
         }
 
 

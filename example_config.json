@@ -17,5 +17,9 @@
         "maps_path": "resources/map/levels/",
         "tiles_path": "resources/map/",
         "background": "resources/map/background-0.png"
+    },
+    "menu": {
+        "background": "resources/menu/menu.png",
+        "pointer": "pointer"
     }
 }

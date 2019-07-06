@@ -44,21 +44,59 @@ class GameStateName(Enum):
     MENU = 0
     RUNNING = 1
     PAUSE = 2
+    LOAD = 3
 
 
 class MenuState(GameState):
+    def __init__(self):
+        self.background = pygame.image.load(config['menu']['background'])
+        self.pointer = pygame.image.load(config['menu']['pointer'])
+
+        self.pointer_index = 0
+        self.pointer_x = 400
+        self.pointer_base_y = 240
+        self.last_index = 2
+
+        self.last_pressed = []
+        self.choosen_state = GameStateName.MENU
+
     def update(self):
         pass
 
     def draw(self):
-        pass
+        return ((self.background, (0, 0)), (self.pointer,
+                (self.pointer_x, self.pointer_base_y + 60 * self.pointer_index)))
 
     @property
     def name(self):
         return GameStateName.MENU
 
     def key_pressed(self, keys):
-        pass
+        if keys[pygame.K_RETURN] or keys[pygame.K_SPACE]:
+            if self.pointer_index == 0:
+                self.choosen_state = GameStateName.LOAD
+
+            elif self.pointer_index == 1:
+                self.choosen_state = GameStateName.RUNNING
+
+            elif self.pointer_index == 2:
+                pygame.quit()
+
+        if keys[pygame.K_UP] and pygame.K_UP not in self.last_pressed:
+            self.last_pressed.append(pygame.K_UP)
+            self.pointer_index -= 1
+            if self.pointer_index < 0:
+                self.pointer_index = self.last_index
+        elif not keys[pygame.K_UP] and pygame.K_UP in self.last_pressed:
+            self.last_pressed.remove(pygame.K_UP)
+
+        if keys[pygame.K_DOWN] and pygame.K_DOWN not in self.last_pressed:
+            self.last_pressed.append(pygame.K_DOWN)
+            self.pointer_index += 1
+            if self.pointer_index > self.last_index:
+                self.pointer_index = 0
+        elif not keys[pygame.K_DOWN] and pygame.K_DOWN in self.last_pressed:
+            self.last_pressed.remove(pygame.K_DOWN)
 
 
 class RunningState(GameState):
@@ -129,6 +167,18 @@ class RunningState(GameState):
             'down_left': down_left.solid if down_left is not None else None,
             'down_right': down_right.solid if down_right is not None else None,
         }
+
+    def load_state(self, x, y, level):
+        '''Loads state of the game.
+
+        Save should only remember player coordinates and his level.
+        Args:
+            x (int): Player x coordinate
+            y (int): Player y coordinate
+            level (int): Level to load
+        '''
+        self.player.set_position(x, y)
+        self.game_map.set_level(level)
 
 
 class PauseState(GameState):

@@ -20,11 +20,14 @@ class GameManager:
             game_state.GameStateName.PAUSE: game_state.PauseState(),
             game_state.GameStateName.RUNNING: game_state.RunningState(),
         }
-        self.current_state = self.states[game_state.GameStateName.RUNNING]
+        self.current_state = self.states[game_state.GameStateName.MENU]
         self.window = window
 
     def update(self):
         '''Calls update and key_pressed function on current state'''
+        if self.current_state == self.states[game_state.GameStateName.MENU]:
+            if self.current_state.choosen_state != game_state.GameStateName.MENU:
+                self.change_state(self.current_state.choosen_state)
         self.current_state.key_pressed(pygame.key.get_pressed())
         self.current_state.update()
 
@@ -46,5 +49,5 @@ class GameManager:
             state (:obj:`GameState`): Game state that will be set as current
                 state.
         '''
-        self.states[self.current_state.get_name()] = self.current_state
+        self.states[self.current_state.name] = self.current_state
         self.current_state = self.states[state]

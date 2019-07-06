@@ -101,7 +101,7 @@ class MenuState(GameState):
 
 class RunningState(GameState):
     def __init__(self):
-        self.player = player.Player(100, 100)
+        self.player = player.Player(100, 700)
         self.game_map = game_map.GameMap(config['map']['background'])
         self.window_height = config['window']['height']
 
@@ -114,6 +114,7 @@ class RunningState(GameState):
             direction = True if self.player.y < 0 else False
             self.game_map.change_level(up=direction)
             self.player.set_position(y=self.window_height-abs(self.player.y))
+            self.player.save_handler.current_level = self.game_map.map_handler.level_index
 
     def draw(self):
         to_draw = []

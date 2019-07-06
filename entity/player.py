@@ -1,8 +1,10 @@
 from enum import Enum
+import json
 
 import pygame
 
 from jumphalla.entity.game_entity import GameEntity
+from jumphalla.config import config
 
 
 class Direction(Enum):
@@ -27,6 +29,30 @@ class StateImageHandler:
         self.powering_img = pygame.image.load('resources/hero/powering.png')
 
 
+class SaveHandler:
+    '''Handles saving player state in game.
+
+    Game should be saved each time player stops falling.
+    '''
+    def __init__(self):
+        self.current_level = 0
+
+    def save_state(self, x, y):
+        '''Saves the game state, player coords and current level
+
+        Args:
+            x (int): Player x coordinate,
+            y (int): Player y coordinate,
+        '''
+        with open(config['save'], 'w') as file_handler:
+            save = {
+                'x': x,
+                'y': y,
+                'level': self.current_level
+            }
+            json.dump(save, file_handler)
+
+
 class Player(GameEntity):
     def __init__(self, x, y):
         '''Main class representing hero that player will take control of in
@@ -48,6 +74,8 @@ class Player(GameEntity):
 
         self.jump_time = 14  # frames
         self.jump_timer = 0
+
+        self.save_handler = SaveHandler()
 
     def update(self, nearby_tiles, tile_width, tile_height):
         '''Updates internal logic of player - change in his position on map
@@ -117,6 +145,8 @@ class Player(GameEntity):
                 self.y = tile_height * (down - 1)
                 self.y_velocity = 0
                 self.current_state = PlayerState.RUNNING
+                # State of game is saved each time player falls
+                self.save_handler.save_state(int(self.x), int(self.y))
 
         if self.y_velocity < 0:
             if nearby_tiles['upper_left'] or nearby_tiles['upper_right']:

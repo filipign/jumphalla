@@ -1,7 +1,10 @@
 # TODO: cleanup imports
+import json
+
 import pygame
 
 from jumphalla.game import game_state
+from jumphalla.config import config
 
 
 class GameManager:
@@ -49,5 +52,22 @@ class GameManager:
             state (:obj:`GameState`): Game state that will be set as current
                 state.
         '''
+        if state == game_state.GameStateName.LOAD:
+            self.states[self.current_state.name] = self.current_state
+            self.current_state = self.states[game_state.GameStateName.RUNNING]
+            self.load_state(config['save'])
+            return
+
         self.states[self.current_state.name] = self.current_state
         self.current_state = self.states[state]
+
+    def load_state(self, path):
+        '''Loads state of the game
+
+        Args:
+            path (str): Path to save file.
+        '''
+        state = {}
+        with open(path, 'r') as file_handler:
+            state = json.load(file_handler)
+        self.current_state.load_state(state['x'], state['y'], state['level'])

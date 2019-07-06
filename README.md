@@ -1,6 +1,6 @@
 ## Jumphalla
 
-Small project with main purpose to improve my python skills.
+Small game project with main purpose to improve my python skills.
 Inspired by indie game Jump King.
 
 # How to run
@@ -8,13 +8,19 @@ Inspired by indie game Jump King.
 - Install requirements (pip install -r requirements.txt)
 - Activate virtual env (. ./venv/bin/activate from main directory) and then enter:
 ```
-./app.py
+python3 app.py
 ```
 
 # How to run tests
 In root directory
 ```
 nosetests
+```
+
+# Sprites sources
+```
+https://rvros.itch.io/animated-pixel-hero
+https://orlando-pixel.itch.io/pirate-bomb
 ```
 
 # Libriaries used

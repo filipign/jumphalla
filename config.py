@@ -20,6 +20,6 @@ with open('testing', 'r') as file_handler:
 
 path = 'tests/test_config.json' if test == '1' else 'config.json'
 with open(path, 'r') as file_handler:
-            config = json.load(file_handler)
+    config = json.load(file_handler)
 
 logger.warning("Config loaded from file {}".format(path))

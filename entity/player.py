@@ -25,8 +25,26 @@ class StateImageHandler:
     '''Handles images and animations for a Player entity'''
     def __init__(self):
         # TODO: paths to config file
-        self.running_img = pygame.image.load('resources/hero/idle-right-0.png')
-        self.powering_img = pygame.image.load('resources/hero/powering.png')
+        self.sprites = {
+            Direction.RIGHT: {
+                PlayerState.POWERING: pygame.image.load('resources/hero/powering-right.png'),
+                PlayerState.RUNNING: pygame.image.load('resources/hero/run-right.png')
+            },
+            Direction.LEFT: {
+                PlayerState.POWERING: pygame.image.load('resources/hero/powering-left.png'),
+                PlayerState.RUNNING: pygame.image.load('resources/hero/run-left.png')
+            }
+        }
+
+        self.player_direction = Direction.RIGHT
+
+    def get_sprite(self, state):
+        '''Returns:
+            image: Player current sprite to draw on screen.
+        '''
+        if state == PlayerState.FALLING:
+            state = PlayerState.RUNNING
+        return self.sprites[self.player_direction][state]
 
 
 class SaveHandler:
@@ -105,6 +123,10 @@ class Player(GameEntity):
 
             if self.x_velocity < 0.5 and self.x_velocity > -0.5:
                 self.x_velocity = 0
+            elif self.x_velocity > 0.5:
+                self.img.player_direction = Direction.RIGHT
+            else:
+                self.img.player_direction = Direction.LEFT
 
         if self.current_state == PlayerState.FALLING:
             if self.jump_timer != 0:
@@ -213,7 +235,5 @@ class Player(GameEntity):
                     self.x_velocity = self.x_max_velocity * direction.value
 
     def draw(self):
-        if self.current_state == PlayerState.POWERING:
-            return (self.img.powering_img, (self.x, self.y))
-
-        return (self.img.running_img, (int(self.x), int(self.y)))
+        return (self.img.get_sprite(self.current_state),
+               (int(self.x), (self.y)))

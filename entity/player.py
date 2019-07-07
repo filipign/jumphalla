@@ -139,7 +139,8 @@ class Player(GameEntity):
     def collision_check(self, nearby_tiles, tile_width, tile_height):
         '''For object collision, player checks if his hitbox would cut with any
         nearby solid tile on map, if so then set player position as close to
-        tile as possible.
+        tile as possible with one pixel buffor so the player won't get stuck in
+        the wall.
 
         Args:
             nearby_tiles (dict): Dictionary of 4 closest tiles, with bools values indicating
@@ -154,12 +155,12 @@ class Player(GameEntity):
 
         if self.x_velocity > 0:
             if nearby_tiles['upper_right'] and nearby_tiles['down_right']:
-                self.x = tile_width * (right - 1)
+                self.x = tile_width * (right - 1) - 1
                 self.x_velocity = 0
 
         if self.x_velocity < 0:
             if nearby_tiles['upper_left'] and nearby_tiles['down_left']:
-                self.x = tile_width * (left + 1)
+                self.x = tile_width * (left + 1) + 1
                 self.x_velocity = 0
 
         if self.y_velocity > 0:

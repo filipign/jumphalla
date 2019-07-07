@@ -5,7 +5,11 @@ from jumphalla.config import config
 
 
 class PlayerCollisionTests(unittest.TestCase):
-    '''Test cases for player collision implementation'''
+    '''Test cases for player collision implementation
+
+    Collision algorithm makes for player one pixel buffor when determines his
+    position - it's still refered as 'as close as possible to the wall'.
+    '''
     def setUp(self):
         self.player = player.Player(100, 100)
         self.tile_width = config['map']['tile']['width']
@@ -41,12 +45,12 @@ class PlayerCollisionTests(unittest.TestCase):
             'down_right': True,
         }
         # Player is close to third tile in a row
-        self.player.set_position(x=60, y=64)
+        self.player.set_position(x=60, y=63)
         self.player.x_velocity=10
         self.player.update(nearby_tiles, self.tile_width, self.tile_height)
         # Assert that, when he is running right, he should be put as close as
         # possible to the tile he is running into.
-        self.assertEqual(self.player.x, 64)
+        self.assertEqual(self.player.x, 63)
         self.assertEqual(self.player.x_velocity, 0)
 
     def test_player_hit_wall_left(self):
@@ -58,12 +62,12 @@ class PlayerCollisionTests(unittest.TestCase):
             'down_right': True,
         }
         # Player is close to first tile in a row
-        self.player.set_position(x=68, y=64)
+        self.player.set_position(x=68, y=65)
         self.player.x_velocity=-10
         self.player.update(nearby_tiles, self.tile_width, self.tile_height)
         # Assert that, when he is running left, he should be put as close as
         # possible to the tile he is running into.
-        self.assertEqual(self.player.x, 64)
+        self.assertEqual(self.player.x, 65)
         self.assertEqual(self.player.x_velocity, 0)
 
     def test_player_hit_roof(self):

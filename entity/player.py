@@ -104,8 +104,8 @@ class Player(GameEntity):
         tile as possible.
 
         Args:
-            nearby_tiles (dict): Dictionary of 4 closest tiles, with bools values indicating
-                that tiles is solid or not.
+            nearby_tiles (dict): Dictionary of 4 closest tiles, with bools
+                values indicating that tiles is solid or not.
             tile_width (int): Map tile width.
             tile_heigth (int): Map tile heigth.
         '''
@@ -116,14 +116,15 @@ class Player(GameEntity):
 
         # slowing down if moving on the ground
         if self.y_velocity > -1:
-            if self.x_velocity > 0.5:
-                self.x_velocity -= 0.3
-            elif self.x_velocity < 0.5:
-                self.x_velocity += 0.3
+            if self.x_velocity > self.stopping_limit:
+                self.x_velocity -= self.slowing_speed
+            elif self.x_velocity < self.stopping_limit:
+                self.x_velocity += self.slowing_speed
 
-            if self.x_velocity < 0.5 and self.x_velocity > -0.5:
+            if (self.x_velocity < self.stopping_limit
+                and self.x_velocity > -self.stopping_limit):
                 self.x_velocity = 0
-            elif self.x_velocity > 0.5:
+            elif self.x_velocity > self.stopping_limit:
                 self.img.player_direction = Direction.RIGHT
             else:
                 self.img.player_direction = Direction.LEFT
@@ -143,8 +144,8 @@ class Player(GameEntity):
         the wall.
 
         Args:
-            nearby_tiles (dict): Dictionary of 4 closest tiles, with bools values indicating
-                that tiles is solid or not.
+            nearby_tiles (dict): Dictionary of 4 closest tiles, with bools
+                values indicating that tiles is solid or not.
             tile_width (int): Map tile width.
             tile_heigth (int): Map tile heigth.
         '''

@@ -21,6 +21,9 @@ class GameEntity:
         self.width_hitbox = 64
         self.height_hitbox = 64
 
+        self.slowing_speed = 0.3
+        self.stopping_limit = 0.5
+
     def get_coords(self):
         return (self.x, self.y)
 
